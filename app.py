@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 
 # ========================= CONFIG =========================
 st.set_page_config(
@@ -8,138 +9,118 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ========================= ULTRA PREMIUM CSS (pour cette page Accueil) =========================
+# ========================= PREMIUM CYBER CSS =========================
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
     :root {
         --bg: #0a0f1c;
+        --card: rgba(15, 23, 42, 0.85);
         --accent: #00f5ff;
         --accent2: #ff2e63;
-        --glow: #00f5ff;
+        --text: #e0f2fe;
+        --light: #94a3b8;
     }
 
     .stApp {
         background: linear-gradient(180deg, #0a0f1c 0%, #0f172a 100%);
-        color: #e0f2fe;
+        color: var(--text);
+        font-family: 'Inter', sans-serif;
     }
 
-    /* HERO - Version ultra premium */
     .hero {
-        padding: 6rem 0 5rem 0;
         text-align: center;
-        position: relative;
-        overflow: hidden;
-        background: radial-gradient(circle at center, rgba(0,245,255,0.08) 0%, transparent 70%);
+        padding: 4rem 0 3rem 0;
+        background: linear-gradient(90deg, rgba(0,245,255,0.08), transparent);
+        border-bottom: 2px solid var(--accent);
     }
-    .hero::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(0,245,255,0.12) 0%, transparent 60%);
-        animation: pulse 15s infinite ease-in-out;
-    }
-    @keyframes pulse {
-        0%, 100% { opacity: 0.6; }
-        50% { opacity: 1; }
-    }
-
     .name {
         font-family: 'Space Grotesk', sans-serif;
-        font-size: 5.2rem;
+        font-size: 4.2rem;
         font-weight: 700;
-        letter-spacing: -2px;
-        background: linear-gradient(90deg, #ffffff, var(--accent));
+        background: linear-gradient(90deg, #00f5ff, #ff2e63);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 
-            0 0 20px var(--glow),
-            0 0 40px var(--glow),
-            0 0 80px var(--accent2);
         margin: 0;
+        text-shadow: 0 0 30px rgba(0,245,255,0.5);
     }
     .tagline {
-        font-size: 1.65rem;
+        font-size: 1.5rem;
         color: var(--accent);
-        letter-spacing: 4px;
-        margin: 1rem 0 2.5rem 0;
-        font-weight: 500;
+        margin: 0.5rem 0 1.5rem 0;
+        letter-spacing: 2px;
     }
 
-    /* Boutons Hero */
-    .hero-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(15,23,42,0.9);
-        color: white;
-        padding: 14px 32px;
-        border-radius: 50px;
-        font-weight: 600;
-        text-decoration: none;
-        border: 1px solid rgba(0,245,255,0.4);
-        transition: all 0.3s;
-        margin: 0 12px;
+    .glass-card {
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0,245,255,0.2);
+        border-radius: 16px;
+        padding: 1.8rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .hero-btn:hover {
-        background: var(--accent);
-        color: #0a0f1c;
-        transform: translateY(-4px);
-        box-shadow: 0 0 30px rgba(0,245,255,0.6);
+    .glass-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,245,255,0.15);
         border-color: var(--accent);
     }
 
-    /* Section Bienvenue */
-    .welcome-section {
-        background: rgba(15,23,42,0.85);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(0,245,255,0.25);
-        border-radius: 24px;
-        padding: 3rem;
-        margin: -4rem auto 4rem;
-        max-width: 1100px;
-        position: relative;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-    .welcome-title {
-        font-size: 2.8rem;
-        font-weight: 700;
+    .neon-text {
         color: var(--accent);
-        text-shadow: 0 0 30px var(--glow);
-        margin-bottom: 1.5rem;
+        text-shadow: 0 0 15px var(--accent);
     }
 
-    /* Photo flottante */
-    .profile-photo {
-        width: 320px;
-        height: 320px;
-        border-radius: 24px;
-        border: 6px solid var(--accent);
-        box-shadow: 
-            0 0 40px rgba(0,245,255,0.5),
-            0 0 80px rgba(255,46,99,0.3);
-        object-fit: cover;
-        transition: transform 0.4s;
-    }
-    .profile-photo:hover {
-        transform: scale(1.05) rotate(2deg);
-    }
-
-    /* Badges */
-    .badge {
+    .skill-pill {
         display: inline-block;
         background: rgba(0,245,255,0.1);
         color: var(--accent);
-        padding: 6px 18px;
-        border-radius: 30px;
-        font-size: 0.9rem;
-        font-weight: 600;
+        padding: 0.55rem 1.2rem;
+        border-radius: 50px;
+        margin: 0.35rem;
+        font-weight: 500;
         border: 1px solid rgba(0,245,255,0.3);
-        margin: 8px 6px 8px 0;
+        transition: all 0.2s;
+    }
+    .skill-pill:hover {
+        background: var(--accent);
+        color: #0a0f1c;
+        transform: scale(1.05);
+    }
+
+    .lab-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.2rem;
+    }
+    .lab-item {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        background: rgba(15,23,42,0.7);
+        border-radius: 14px;
+        border: 1px solid rgba(0,245,255,0.15);
+    }
+    .lab-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-header {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 2.5rem 0 1.5rem 0;
+        color: white;
+        position: relative;
+    }
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 3px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -148,69 +129,133 @@ st.markdown("""
 NAME = "SAFAA ZEMMAR"
 TAGLINE = "CYBERSECURITY • VIRTUALISATION • INFRASTRUCTURE"
 
-PROFILE_TEXT = """
-Étudiante en Bachelor 2 Informatique à Ynov Paris, passionnée par la cybersécurité opérationnelle 
-et la sécurisation des infrastructures. Je construis des environnements techniques réalistes 
-pour comprendre les mécanismes avant d’utiliser les outils. 
-
+PROFILE = """
+Étudiante en Bachelor 2 Informatique à Ynov Paris, passionnée par la cybersécurité opérationnelle et la sécurisation des infrastructures. 
+Je construis des environnements techniques réalistes pour comprendre les mécanismes avant d’utiliser les outils. 
 Mon objectif : devenir une analyste SOC ou pentester technique spécialisée en virtualisation sécurisée.
 """
 
-# ========================= HERO + ACCUEIL (version beaucoup plus belle) =========================
+LAB_COMPONENTS = [
+    {"icon": "🖥️", "title": "Machines Virtuelles", "desc": "Windows 10/11 + Debian 12 + Ubuntu Server"},
+    {"icon": "🔥", "title": "pfSense Firewall", "desc": "Règles de filtrage, NAT, segmentation réseau"},
+    {"icon": "🌐", "title": "Serveur Apache + Proxy", "desc": "Reverse proxy + configuration sécurisée"},
+    {"icon": "📡", "title": "Réseau Cisco", "desc": "VLAN • Routage • Switching • Packet Tracer"},
+    {"icon": "🔍", "title": "Analyse Réseau", "desc": "Wireshark • Nmap • TCPDump"},
+    {"icon": "🛡️", "title": "Environnement Isolé", "desc": "Tests d’attaques & défense en lab contrôlé"}
+]
+
+SKILLS = {
+    "Infrastructure & Virtualisation": ["VirtualBox", "VMware", "Linux (Debian/Ubuntu)", "Windows Server", "pfSense", "Apache", "Proxy"],
+    "Réseau & Analyse": ["TCP/IP", "VLAN", "Cisco", "Wireshark", "Nmap", "DNS/SSH"],
+    "Cybersécurité": ["Firewall Rules", "SQL Injection", "XSS", "Session Management", "TLS/HTTPS", "CTF"],
+    "Développement": ["Python", "PHP & MySQL", "Java Swing", "HTML/CSS/JS", "Git"]
+}
+
+VISION = """
+Je veux évoluer vers des postes où la technique rencontre la sécurité :  
+• Analyste SOC / Blue Team  
+• Administratrice systèmes & réseaux sécurisés  
+• Pentester infrastructure & virtualisation  
+Mon moteur : comprendre profondément les systèmes pour mieux les protéger.
+"""
+
+# ========================= LAYOUT =========================
+# HERO
 st.markdown(f"""
 <div class="hero">
     <h1 class="name">{NAME}</h1>
     <p class="tagline">{TAGLINE}</p>
-    
-    <div style="margin: 2rem 0 3rem 0;">
-        <a href="https://github.com/safaa60" target="_blank" class="hero-btn">
-            🐙 GitHub
-        </a>
-        <a href="mailto:safaazemmar@gmail.com" class="hero-btn">
-            ✉️ Contact
-        </a>
-        <a href="#" class="hero-btn" onclick="window.location.reload()">📄 CV PDF</a>
+    <div style="margin-top:2rem;">
+        <a href="https://github.com/safaa60" target="_blank" style="color:var(--accent); margin:0 1.5rem; text-decoration:none;">🐙 GitHub</a>
+        <a href="mailto:safaazemmar@gmail.com" style="color:var(--accent); margin:0 1.5rem; text-decoration:none;">✉️ Contact</a>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ====================== SECTION BIENVENUE (le cœur de la page) ======================
-col_left, col_right = st.columns([1.65, 1])
+# SIDEBAR
+with st.sidebar:
+    st.markdown("### 🛡️ Navigation")
+    page = st.radio(
+        label="",
+        options=["Accueil", "Mon Cyber Lab", "Sécurité Applicative", "Compétences", "Vision & Objectifs"],
+        label_visibility="collapsed"
+    )
+    st.markdown("---")
+    st.caption("Étudiante en alternance recherchée • B3 Cybersécurité")
+    if st.button("⬇️ Télécharger mon CV PDF", use_container_width=True):
+        st.success("CV téléchargé ! (ajoute ton vrai PDF dans assets pour que ça marche)")
 
-with col_left:
+# MAIN CONTENT
+if page == "Accueil":
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.markdown(f"""
+        <div class="glass-card" style="margin-top:2rem;">
+            <h2 class="neon-text">👋 Bienvenue sur mon portfolio</h2>
+            <p style="font-size:1.15rem; line-height:1.7;">{PROFILE}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.image("https://via.placeholder.com/380x420/0a0f1c/00f5ff?text=SAFAA+ZEMMAR", use_container_width=True)  # Remplace par ta vraie photo
+
+elif page == "Mon Cyber Lab":
+    st.markdown('<h2 class="section-header">🧪 Mon Cyber Lab Personnel</h2>', unsafe_allow_html=True)
+    st.markdown("Un environnement complet que j’ai construit moi-même pour expérimenter en conditions réelles.")
+    
+    st.markdown('<div class="lab-grid">', unsafe_allow_html=True)
+    for item in LAB_COMPONENTS:
+        st.markdown(f"""
+            <div class="lab-item glass-card">
+                <div class="lab-icon">{item["icon"]}</div>
+                <h3 style="margin:0.5rem 0 0.3rem 0;">{item["title"]}</h3>
+                <p style="color:var(--light); font-size:0.95rem;">{item["desc"]}</p>
+            </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+elif page == "Sécurité Applicative":
+    st.markdown('<h2 class="section-header">🌐 Sécurité Applicative</h2>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="glass-card">
+        <p>J’intègre la sécurité dès la conception de mes projets de développement :</p>
+        <ul style="font-size:1.1rem; line-height:2;">
+            <li>Authentification & gestion des sessions</li>
+            <li>Validation stricte des entrées utilisateur</li>
+            <li>Protection contre SQL Injection & XSS</li>
+            <li>Réflexion sur l’architecture sécurisée</li>
+        </ul>
+        <p><strong>Chaque ligne de code est une opportunité d’apprendre la cybersécurité.</strong></p>
+    </div>
+    """, unsafe_allow_html=True)
+
+elif page == "Compétences":
+    st.markdown('<h2 class="section-header">🛠️ Mes Compétences</h2>', unsafe_allow_html=True)
+    for category, items in SKILLS.items():
+        st.markdown(f"""
+        <div class="glass-card" style="margin-bottom:1.8rem;">
+            <h3 style="color:var(--accent); margin-bottom:1rem;">{category}</h3>
+            <div>
+                {''.join([f'<span class="skill-pill">{skill}</span>' for skill in items])}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+elif page == "Vision & Objectifs":
+    st.markdown('<h2 class="section-header">🎯 Ma Vision</h2>', unsafe_allow_html=True)
     st.markdown(f"""
-    <div class="welcome-section">
-        <span style="font-size:3.5rem;">👋</span>
-        <h2 class="welcome-title">Bienvenue sur mon portfolio</h2>
-        <p style="font-size:1.22rem; line-height:1.85; color:#cbd5e1;">
-            {PROFILE_TEXT}
-        </p>
-        
-        <div style="margin-top:2rem;">
-            <span class="badge">Alternance B3 Cybersécurité recherchée</span>
-            <span class="badge">Ynov Paris 2025-2026</span>
-            <span class="badge">Cyber Lab 100% fait main</span>
+    <div class="glass-card">
+        <p style="font-size:1.2rem; line-height:1.8;">{VISION}</p>
+        <div style="margin-top:2rem; padding:1.5rem; background:rgba(0,245,255,0.05); border-radius:12px; border-left:5px solid var(--accent);">
+            <strong>Je cherche une alternance B3 Cybersécurité dès septembre 2026</strong><br>
+            SOC • Pentest • Infrastructure sécurisée • Virtualisation
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-with col_right:
-    # Remplace l'URL par ta vraie photo (idéalement 800x800 px)
-    st.markdown("""
-    <div style="text-align:center; margin-top:2rem;">
-        <img src="https://via.placeholder.com/600x600/1e2937/00f5ff?text=SAFAA" 
-             class="profile-photo" alt="Safaa Zemmar">
-    </div>
-    """, unsafe_allow_html=True)
-
-# Bouton Download CV en bas de la section (très visible)
+# FOOTER
+st.markdown("---")
 st.markdown("""
-<div style="text-align:center; margin:3rem 0 2rem 0;">
-    <a href="#" style="background:#00f5ff; color:#0a0f1c; padding:16px 48px; border-radius:50px; 
-    font-weight:700; font-size:1.1rem; text-decoration:none; box-shadow:0 0 40px #00f5ff;">
-        ⬇️ Télécharger mon CV complet
-    </a>
+<div style="text-align:center; color:#64748b; padding:2rem 0;">
+    © 2026 Safaa Zemmar — Portfolio Cybersécurité • Fait avec passion et du café ☕
 </div>
 """, unsafe_allow_html=True)
-
-st.caption("© 2026 Safaa Zemmar — Portfolio Cyber • Design premium neon")
