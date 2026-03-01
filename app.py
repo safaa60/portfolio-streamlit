@@ -1,246 +1,261 @@
 import streamlit as st
+from pathlib import Path
 
+# ========================= CONFIG =========================
 st.set_page_config(
-    page_title="Safaa Zemmar — Portfolio Cyber",
+    page_title="Safaa Zemmar | Cyber Portfolio",
     page_icon="🛡️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# ---------------- STYLE PREMIUM ----------------
+# ========================= PREMIUM CYBER CSS =========================
 st.markdown("""
 <style>
-.block-container {max-width: 1200px;}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-.bg {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(900px 600px at 15% 10%, rgba(99,102,241,.22), transparent 60%),
-      radial-gradient(700px 500px at 85% 15%, rgba(16,185,129,.18), transparent 60%),
-      radial-gradient(900px 650px at 55% 88%, rgba(236,72,153,.14), transparent 55%),
-      linear-gradient(180deg, #050611 0%, #050611 100%);
-    animation: hue 10s ease-in-out infinite alternate;
-}
+    :root {
+        --bg: #0a0f1c;
+        --card: rgba(15, 23, 42, 0.85);
+        --accent: #00f5ff;
+        --accent2: #ff2e63;
+        --text: #e0f2fe;
+        --light: #94a3b8;
+    }
 
-@keyframes hue {
-    from { filter: hue-rotate(0deg); }
-    to { filter: hue-rotate(25deg); }
-}
+    .stApp {
+        background: linear-gradient(180deg, #0a0f1c 0%, #0f172a 100%);
+        color: var(--text);
+        font-family: 'Inter', sans-serif;
+    }
 
-.hero {
-    border: 1px solid rgba(255,255,255,.10);
-    background: rgba(255,255,255,.05);
-    backdrop-filter: blur(12px);
-    border-radius: 22px;
-    padding: 26px;
-    box-shadow: 0 25px 60px rgba(0,0,0,.45);
-    position: relative;
-    overflow: hidden;
-}
+    .hero {
+        text-align: center;
+        padding: 4rem 0 3rem 0;
+        background: linear-gradient(90deg, rgba(0,245,255,0.08), transparent);
+        border-bottom: 2px solid var(--accent);
+    }
+    .name {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 4.2rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #00f5ff, #ff2e63);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+        text-shadow: 0 0 30px rgba(0,245,255,0.5);
+    }
+    .tagline {
+        font-size: 1.5rem;
+        color: var(--accent);
+        margin: 0.5rem 0 1.5rem 0;
+        letter-spacing: 2px;
+    }
 
-.hero:before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    background: linear-gradient(90deg, rgba(99,102,241,.60), rgba(16,185,129,.40), rgbargba(236,72,153,.35));
-    opacity: 0.35;
-    filter: blur(30px);
-    animation: glow 4s ease-in-out infinite alternate;
-}
+    .glass-card {
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0,245,255,0.2);
+        border-radius: 16px;
+        padding: 1.8rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,245,255,0.15);
+        border-color: var(--accent);
+    }
 
-@keyframes glow {
-    from { transform: translateX(-10px); }
-    to { transform: translateX(10px); }
-}
+    .neon-text {
+        color: var(--accent);
+        text-shadow: 0 0 15px var(--accent);
+    }
 
-.title {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: rgba(255,255,255,.95);
-    letter-spacing: -0.03em;
-}
+    .skill-pill {
+        display: inline-block;
+        background: rgba(0,245,255,0.1);
+        color: var(--accent);
+        padding: 0.55rem 1.2rem;
+        border-radius: 50px;
+        margin: 0.35rem;
+        font-weight: 500;
+        border: 1px solid rgba(0,245,255,0.3);
+        transition: all 0.2s;
+    }
+    .skill-pill:hover {
+        background: var(--accent);
+        color: #0a0f1c;
+        transform: scale(1.05);
+    }
 
-.subtitle {
-    color: rgba(255,255,255,.65);
-    font-size: 1.05rem;
-}
+    .lab-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.2rem;
+    }
+    .lab-item {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        background: rgba(15,23,42,0.7);
+        border-radius: 14px;
+        border: 1px solid rgba(0,245,255,0.15);
+    }
+    .lab-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
 
-.text {
-    color: rgba(255,255,255,.80);
-    line-height: 1.6;
-}
-
-.card {
-    border: 1px solid rgba(255,255,255,.10);
-    background: rgba(255,255,255,.04);
-    backdrop-filter: blur(12px);
-    border-radius: 18px;
-    padding: 18px;
-    box-shadow: 0 18px 35px rgba(0,0,0,.30);
-    transition: all 0.25s ease;
-}
-
-.card:hover {
-    transform: translateY(-6px);
-    border: 1px solid rgba(255,255,255,.20);
-    background: rgba(255,255,255,.06);
-}
-
-.section-title {
-    font-size: 1.15rem;
-    font-weight: 900;
-    margin-top: 30px;
-    color: rgba(255,255,255,.92);
-}
-
-.chip {
-    display:inline-block;
-    padding:.35rem .7rem;
-    border-radius:999px;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.14);
-    color: rgba(255,255,255,.88);
-    font-size: .85rem;
-    margin: .2rem .25rem 0 0;
-}
+    .section-header {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 2.5rem 0 1.5rem 0;
+        color: white;
+        position: relative;
+    }
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 3px;
+    }
 </style>
-
-<div class="bg"></div>
 """, unsafe_allow_html=True)
 
-# ---------------- SIDEBAR ----------------
-page = st.sidebar.radio(
-    "Navigation",
-    [
-        "Présentation",
-        "Cyber Lab",
-        "Sécurité Applicative",
-        "Compétences",
-        "Vision & Objectifs"
-    ]
-)
+# ========================= DATA =========================
+NAME = "SAFAA ZEMMAR"
+TAGLINE = "CYBERSECURITY • VIRTUALISATION • INFRASTRUCTURE"
 
-# ---------------- HERO ----------------
-st.markdown("""
+PROFILE = """
+Étudiante en Bachelor 2 Informatique à Ynov Paris, passionnée par la cybersécurité opérationnelle et la sécurisation des infrastructures. 
+Je construis des environnements techniques réalistes pour comprendre les mécanismes avant d’utiliser les outils. 
+Mon objectif : devenir une analyste SOC ou pentester technique spécialisée en virtualisation sécurisée.
+"""
+
+LAB_COMPONENTS = [
+    {"icon": "🖥️", "title": "Machines Virtuelles", "desc": "Windows 10/11 + Debian 12 + Ubuntu Server"},
+    {"icon": "🔥", "title": "pfSense Firewall", "desc": "Règles de filtrage, NAT, segmentation réseau"},
+    {"icon": "🌐", "title": "Serveur Apache + Proxy", "desc": "Reverse proxy + configuration sécurisée"},
+    {"icon": "📡", "title": "Réseau Cisco", "desc": "VLAN • Routage • Switching • Packet Tracer"},
+    {"icon": "🔍", "title": "Analyse Réseau", "desc": "Wireshark • Nmap • TCPDump"},
+    {"icon": "🛡️", "title": "Environnement Isolé", "desc": "Tests d’attaques & défense en lab contrôlé"}
+]
+
+SKILLS = {
+    "Infrastructure & Virtualisation": ["VirtualBox", "VMware", "Linux (Debian/Ubuntu)", "Windows Server", "pfSense", "Apache", "Proxy"],
+    "Réseau & Analyse": ["TCP/IP", "VLAN", "Cisco", "Wireshark", "Nmap", "DNS/SSH"],
+    "Cybersécurité": ["Firewall Rules", "SQL Injection", "XSS", "Session Management", "TLS/HTTPS", "CTF"],
+    "Développement": ["Python", "PHP & MySQL", "Java Swing", "HTML/CSS/JS", "Git"]
+}
+
+VISION = """
+Je veux évoluer vers des postes où la technique rencontre la sécurité :  
+• Analyste SOC / Blue Team  
+• Administratrice systèmes & réseaux sécurisés  
+• Pentester infrastructure & virtualisation  
+Mon moteur : comprendre profondément les systèmes pour mieux les protéger.
+"""
+
+# ========================= LAYOUT =========================
+# HERO
+st.markdown(f"""
 <div class="hero">
-<div class="title">🛡️ Safaa Zemmar</div>
-<div class="subtitle">Portfolio Cybersécurité</div>
-<div class="text">
-Étudiante en informatique orientée cybersécurité, avec un background en développement et un intérêt 
-particulier pour les systèmes, réseaux et architectures techniques.
-</div>
-</div>
-""", unsafe_allow_html=True)
-
-# ---------------- PAGE 1 ----------------
-if page == "Présentation":
-
-    st.markdown('<div class="section-title">Profil</div>', unsafe_allow_html=True)
-
-    st.markdown("""
-<div class="card">
-<div class="text">
-Mon approche de la cybersécurité repose sur la compréhension des mécanismes techniques avant 
-l’utilisation des outils.
-
-Je développe mes compétences à travers :
-
-• La construction de labs virtualisés  
-• L’expérimentation réseau et systèmes  
-• L’analyse des comportements applicatifs  
-• L’intégration des problématiques de sécurité dans mes projets de développement  
-</div>
+    <h1 class="name">{NAME}</h1>
+    <p class="tagline">{TAGLINE}</p>
+    <div style="margin-top:2rem;">
+        <a href="https://github.com/safaa60" target="_blank" style="color:var(--accent); margin:0 1.5rem; text-decoration:none;">🐙 GitHub</a>
+        <a href="mailto:safaazemmar@gmail.com" style="color:var(--accent); margin:0 1.5rem; text-decoration:none;">✉️ Contact</a>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ---------------- PAGE 2 ----------------
-elif page == "Cyber Lab":
+# SIDEBAR
+with st.sidebar:
+    st.markdown("### 🛡️ Navigation")
+    page = st.radio(
+        label="",
+        options=["Accueil", "Mon Cyber Lab", "Sécurité Applicative", "Compétences", "Vision & Objectifs"],
+        label_visibility="collapsed"
+    )
+    st.markdown("---")
+    st.caption("Étudiante en alternance recherchée • B3 Cybersécurité")
+    if st.button("⬇️ Télécharger mon CV PDF", use_container_width=True):
+        st.success("CV téléchargé ! (ajoute ton vrai PDF dans assets pour que ça marche)")
 
-    st.markdown('<div class="section-title">🧪 Cyber Lab</div>', unsafe_allow_html=True)
+# MAIN CONTENT
+if page == "Accueil":
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.markdown(f"""
+        <div class="glass-card" style="margin-top:2rem;">
+            <h2 class="neon-text">👋 Bienvenue sur mon portfolio</h2>
+            <p style="font-size:1.15rem; line-height:1.7;">{PROFILE}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.image("https://via.placeholder.com/380x420/0a0f1c/00f5ff?text=SAFAA+ZEMMAR", use_container_width=True)  # Remplace par ta vraie photo
 
-    st.markdown("""
-<div class="card">
-<div class="text">
-
-<b>Objectif</b><br>
-Créer un environnement technique réaliste permettant d’expérimenter des architectures réseau 
-et des mécanismes de sécurité.
-
-<b>Composants</b>
-
-• Machines virtuelles Windows / Linux  
-• Firewall pfSense  
-• Serveur Apache  
-• Serveur Proxy  
-• LDAP (lab)  
-
-<b>Axes de travail</b>
-
-• Compréhension des flux réseau  
-• Logique de segmentation  
-• Interaction entre services et systèmes  
-• Diagnostic et résolution de problèmes techniques  
-
-</div>
-</div>
-""", unsafe_allow_html=True)
-
-# ---------------- PAGE 3 ----------------
-elif page == "Sécurité Applicative":
-
-    st.markdown('<div class="section-title">🌐 Sécurité Applicative</div>', unsafe_allow_html=True)
-
-    st.markdown("""
-<div class="card">
-<div class="text">
-
-Mes projets de développement constituent un support d’analyse des problématiques de sécurité :
-
-• Gestion des utilisateurs et authentification  
-• Validation des entrées utilisateur  
-• Gestion des sessions  
-• Réflexion sur les vulnérabilités web (SQL Injection, XSS)  
-
-Approche : intégrer progressivement la sécurité dans la conception applicative.
-</div>
-</div>
-""", unsafe_allow_html=True)
-
-# ---------------- PAGE 4 ----------------
-elif page == "Compétences":
-
-    st.markdown('<div class="section-title">🛠️ Compétences</div>', unsafe_allow_html=True)
-
-    skills = [
-        "Linux", "TCP/IP", "pfSense", "Wireshark",
-        "SQL Injection", "XSS", "Sessions",
-        "Python", "PHP/SQL", "Java", "Cisco"
-    ]
-
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    for skill in skills:
-        st.markdown(f'<span class="chip">{skill}</span>', unsafe_allow_html=True)
+elif page == "Mon Cyber Lab":
+    st.markdown('<h2 class="section-header">🧪 Mon Cyber Lab Personnel</h2>', unsafe_allow_html=True)
+    st.markdown("Un environnement complet que j’ai construit moi-même pour expérimenter en conditions réelles.")
+    
+    st.markdown('<div class="lab-grid">', unsafe_allow_html=True)
+    for item in LAB_COMPONENTS:
+        st.markdown(f"""
+            <div class="lab-item glass-card">
+                <div class="lab-icon">{item["icon"]}</div>
+                <h3 style="margin:0.5rem 0 0.3rem 0;">{item["title"]}</h3>
+                <p style="color:var(--light); font-size:0.95rem;">{item["desc"]}</p>
+            </div>
+        """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------------- PAGE 5 ----------------
-elif page == "Vision & Objectifs":
-
-    st.markdown('<div class="section-title">🎯 Vision & Objectifs</div>', unsafe_allow_html=True)
-
+elif page == "Sécurité Applicative":
+    st.markdown('<h2 class="section-header">🌐 Sécurité Applicative</h2>', unsafe_allow_html=True)
     st.markdown("""
-<div class="card">
-<div class="text">
-Je souhaite évoluer vers des environnements liés à :
+    <div class="glass-card">
+        <p>J’intègre la sécurité dès la conception de mes projets de développement :</p>
+        <ul style="font-size:1.1rem; line-height:2;">
+            <li>Authentification & gestion des sessions</li>
+            <li>Validation stricte des entrées utilisateur</li>
+            <li>Protection contre SQL Injection & XSS</li>
+            <li>Réflexion sur l’architecture sécurisée</li>
+        </ul>
+        <p><strong>Chaque ligne de code est une opportunité d’apprendre la cybersécurité.</strong></p>
+    </div>
+    """, unsafe_allow_html=True)
 
-• La cybersécurité opérationnelle  
-• Les architectures réseau & systèmes  
-• La sécurité des applications  
-• Les infrastructures techniques  
+elif page == "Compétences":
+    st.markdown('<h2 class="section-header">🛠️ Mes Compétences</h2>', unsafe_allow_html=True)
+    for category, items in SKILLS.items():
+        st.markdown(f"""
+        <div class="glass-card" style="margin-bottom:1.8rem;">
+            <h3 style="color:var(--accent); margin-bottom:1rem;">{category}</h3>
+            <div>
+                {''.join([f'<span class="skill-pill">{skill}</span>' for skill in items])}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-Objectif : développer une expertise technique solide et une capacité d’analyse approfondie.
-</div>
+elif page == "Vision & Objectifs":
+    st.markdown('<h2 class="section-header">🎯 Ma Vision</h2>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="glass-card">
+        <p style="font-size:1.2rem; line-height:1.8;">{VISION}</p>
+        <div style="margin-top:2rem; padding:1.5rem; background:rgba(0,245,255,0.05); border-radius:12px; border-left:5px solid var(--accent);">
+            <strong>Je cherche une alternance B3 Cybersécurité dès septembre 2026</strong><br>
+            SOC • Pentest • Infrastructure sécurisée • Virtualisation
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# FOOTER
+st.markdown("---")
+st.markdown("""
+<div style="text-align:center; color:#64748b; padding:2rem 0;">
+    © 2026 Safaa Zemmar — Portfolio Cybersécurité • Fait avec passion et du café ☕
 </div>
 """, unsafe_allow_html=True)
-
-st.caption("© Safaa Zemmar — Portfolio Cyber")
